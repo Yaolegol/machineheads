@@ -28,6 +28,9 @@ module.exports = {
         ],
     },
     resolve: {
+        alias: {
+            '@': path.resolve(__dirname, 'src/'),
+        },
         extensions: ['.tsx', '.ts', '.js'],
     },
     output: {
@@ -43,4 +46,5 @@ module.exports = {
         static: path.join(__dirname, 'dist'),
         port: 3000,
     },
+
 };

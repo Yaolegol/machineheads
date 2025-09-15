@@ -17,6 +17,9 @@
     "outDir": "./dist/",
     "noFallthroughCasesInSwitch": true,
     "module": "esnext",
-  },
+    "baseUrl": "src",
+    "paths": {
+      "@/*": ["*"]
+    },
   "include": ["src", "src/global.d.ts"]
 }
