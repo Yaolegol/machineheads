@@ -1,8 +1,15 @@
 {
   "compilerOptions": {
-    "typeRoots": ["./node_modules/@types", "./src/global.d.ts"],
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/global.d.ts"
+    ],
     "target": "es6",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -19,7 +26,13 @@
     "module": "esnext",
     "baseUrl": "src",
     "paths": {
-      "@/*": ["*"]
+      "@/*": [
+        "*"
+      ]
     },
-  "include": ["src", "src/global.d.ts"]
+  },
+  "include": [
+    "src",
+    "src/global.d.ts"
+  ]
 }
