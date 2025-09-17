@@ -2,19 +2,20 @@ import { getCookie, setCookie } from '@/helpers/cookie';
 
 const API_BASE_URL = 'https://rest-test.machineheads.ru';
 
+type TOptions = RequestInit
+
 export interface ApiResponse<T> {
     data: T;
     response: Response;
 }
 
 class ApiClient {
-    private request = async <T>(endpoint: string, options: RequestInit = {}): Promise<ApiResponse<T>> => {
+    private request = async <T>(endpoint: string, options: TOptions): Promise<ApiResponse<T>> => {
         const url = `${API_BASE_URL}${endpoint}`;
         const token = getCookie('accessToken');
         const refreshToken = getCookie('refreshToken');
 
         const headers: HeadersInit = {
-            'Content-Type': 'application/json',
             ...options.headers,
         };
 
@@ -83,19 +84,19 @@ class ApiClient {
         return null;
     }
 
-    public get = async <T>(endpoint: string, options?: RequestInit): Promise<ApiResponse<T>> => {
+    public get = async <T>(endpoint: string, options?: TOptions): Promise<ApiResponse<T>> => {
         return this.request<T>(endpoint, { ...options, method: 'GET' });
     }
 
-    public post = async <T>(endpoint: string, data?: any, options?: RequestInit): Promise<ApiResponse<T>> => {
+    public post = async <T>(endpoint: string, data?: any, options?: TOptions): Promise<ApiResponse<T>> => {
         return this.request<T>(endpoint, {
             ...options,
             method: 'POST',
-            body: JSON.stringify(data),
+            body: data,
         });
     }
 
-    public put = async <T>(endpoint: string, data?: any, options?: RequestInit): Promise<ApiResponse<T>> => {
+    public put = async <T>(endpoint: string, data?: any, options?: TOptions): Promise<ApiResponse<T>> => {
         return this.request<T>(endpoint, {
             ...options,
             method: 'PUT',
@@ -103,7 +104,7 @@ class ApiClient {
         });
     }
 
-    public delete = async <T>(endpoint: string, options?: RequestInit): Promise<ApiResponse<T>> => {
+    public delete = async <T>(endpoint: string, options?: TOptions): Promise<ApiResponse<T>> => {
         return this.request<T>(endpoint, { ...options, method: 'DELETE' });
     }
 }

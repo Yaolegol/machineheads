@@ -9,10 +9,11 @@ import {setCookie, removeCookie, getCookie} from '@/helpers/cookie';
 import { push } from 'connected-react-router';
 import {LoginRequestAction} from "@/modules/auth/store/types";
 import {ITokenResponse} from "@/modules/auth/types";
+import {loginService} from "@/modules/auth/services";
 
 function* loginSaga(action: LoginRequestAction) {
     try {
-        const response: ApiResponse<ITokenResponse> = yield call(apiClient.post, '/auth/token-generate', action.payload);
+        const response: ApiResponse<ITokenResponse> = yield call(loginService, action.payload);
         const { accessToken, access_expired_at, refreshToken, refresh_expired_at } = response.data;
 
         setCookie('accessToken', accessToken, access_expired_at);
