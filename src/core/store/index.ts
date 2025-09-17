@@ -1,25 +1,20 @@
-import { createBrowserHistory } from 'history';
-import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
-import createSagaMiddleware from 'redux-saga';
-import { connectRouter, routerMiddleware } from 'connected-react-router';
-import { authReducer } from '@/modules/auth/store/reducers';
-import { authSaga } from '@/modules/auth/sagas';
+import { createStore, IModuleStore } from "redux-dynamic-modules";
+import { getSagaExtension } from "redux-dynamic-modules-saga";
+import { createBrowserHistory } from "history";
+import { connectRouter, routerMiddleware } from "connected-react-router";
 
 export const history = createBrowserHistory();
 
-const rootReducer = combineReducers({
-    auth: authReducer,
-    router: connectRouter(history),
-});
+export function createAppStore() {
+    const store = createStore({
+        extensions: [getSagaExtension()],
+    }) as IModuleStore<any>;
 
-const sagaMiddleware = createSagaMiddleware();
-const middlewares = [sagaMiddleware, routerMiddleware(history)];
+    store.addModule({
+        id: "router-core",
+        reducerMap: { router: connectRouter(history) }, // именно "router"
+        middlewares: [routerMiddleware(history)],
+    });
 
-const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-
-export const store = createStore(
-    rootReducer,
-    composeEnhancers(applyMiddleware(...middlewares))
-);
-
-sagaMiddleware.run(authSaga);
+    return store;
+}

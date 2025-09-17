@@ -9,7 +9,7 @@ import {
 } from '@/modules/auth/store/constants';
 import {AuthActionTypes} from "@/modules/auth/store/types";
 
-interface AuthState {
+export interface AuthState {
     isLoggedIn: boolean;
     loading: boolean;
     error: string | null;
