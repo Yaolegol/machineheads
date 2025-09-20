@@ -37,13 +37,19 @@ export function* initAuthSaga() {
 
                 yield put(initAuthSuccess(true));
             }
+
+            return;
         } catch (error) {
             clearAuthCookie();
 
             // @ts-ignore
             yield put(initAuthFailure(error.message));
+
+            return;
         }
     }
+
+    yield put(initAuthSuccess(false));
 }
 
 function* loginSaga(action: LoginRequestAction) {

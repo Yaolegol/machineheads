@@ -28,23 +28,23 @@ export const authReducer = (state = initialState, action: AuthActionTypes): Auth
         case INIT_AUTH:
             return {
                 ...state,
-                loading: true,
                 error: null,
+                loading: true,
             };
         case INIT_AUTH_SUCCESS:
             return {
                 ...state,
+                error: null,
+                isAuthInit: true,
                 isLoggedIn: action.payload,
                 loading: false,
-                isAuthInit: true,
-                error: null,
             };
         case INIT_AUTH_FAILURE:
             return {
                 ...state,
-                loading: false,
-                isAuthInit: true,
                 error: action.payload,
+                isAuthInit: true,
+                loading: false,
             };
         case LOGIN_REQUEST:
             return {

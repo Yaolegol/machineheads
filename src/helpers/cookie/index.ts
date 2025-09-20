@@ -19,12 +19,12 @@ export function getCookie(name: string): string | null {
 }
 
 
-export const setSecureCookie = (name: string, value: string, timestamp: number): void => {
+export const setAuthCookie = (name: string, value: string, timestamp: number): void => {
     const expiresDate = new Date(timestamp * 1000);
 
-    document.cookie = `${name}=${value}; path=/; max-age=${expiresDate.toUTCString()}; secure; httponly`;
+    document.cookie = `${name}=${value}; path=/; expires=${expiresDate.toUTCString()}`;
 };
 
-export const removeCookie = (name: string): void => {
-    document.cookie = `${name}=; path=/; max-age=-1`;
+export const removeAuthCookie = (name: string): void => {
+    document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
 };
