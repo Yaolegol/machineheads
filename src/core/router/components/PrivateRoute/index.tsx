@@ -2,14 +2,15 @@ import React, {FC, ReactElement} from 'react';
 import {useSelector} from "react-redux";
 import {RootState} from "@/core/store/types";
 import {Redirect, useLocation} from "react-router-dom";
+import {useIsAuthInit, useIsLoggedIn} from "@/modules/auth/store/selectors";
 
 interface IProps {
     children: ReactElement;
 }
 
 export const PrivateRoute: FC<IProps> = ({ children }) => {
-    const isAuthInit = useSelector((state: RootState) => state.auth.isAuthInit);
-    const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
+    const isAuthInit = useIsAuthInit();
+    const isLoggedIn = useIsLoggedIn();
     const location = useLocation();
 
     if(!isAuthInit) {

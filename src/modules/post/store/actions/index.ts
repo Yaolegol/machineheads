@@ -1,13 +1,17 @@
 import {POST_LIST_FAILURE, POST_LIST_REQUEST, POST_LIST_SUCCESS} from "@/modules/post/store/constants";
-import {IPost} from "@/modules/post/types";
+import {IPagination, IPost} from "@/modules/post/types";
 
-export const getPostListRequest = () => ({
+export const getPostListRequest = (page: number) => ({
+    payload: {
+        page,
+    },
     type: POST_LIST_REQUEST,
 });
 
-export const getPostListSuccess = (list: IPost[]) => ({
+export const getPostListSuccess = (list: IPost[], pagination: IPagination) => ({
     payload: {
-        list
+        list,
+        pagination,
     },
     type: POST_LIST_SUCCESS,
 });

@@ -1,20 +1,22 @@
 import {POST_LIST_FAILURE, POST_LIST_REQUEST, POST_LIST_SUCCESS} from "@/modules/post/store/constants";
 import {PostActionTypes} from "@/modules/post/store/types";
-import {IPost} from "@/modules/post/types";
+import {IPagination, IPost} from "@/modules/post/types";
 
-export interface AuthState {
+export interface PostState {
+    pagination: IPagination | null;
     postList: IPost[];
     loading: boolean;
     error: string | null;
 }
 
-const initialState: AuthState = {
+const initialState: PostState = {
+    pagination: null,
     postList: [],
     loading: false,
     error: null,
 };
 
-export const postReducer = (state = initialState, action: PostActionTypes): AuthState => {
+export const postReducer = (state = initialState, action: PostActionTypes): PostState => {
     switch (action.type) {
         case POST_LIST_REQUEST:
             return {
@@ -25,8 +27,11 @@ export const postReducer = (state = initialState, action: PostActionTypes): Auth
         case POST_LIST_SUCCESS:
             return {
                 ...state,
+                pagination: {
+                  ...action.payload.pagination
+                },
                 postList: [
-                    ...action.payload.list
+                    ...action.payload.list,
                 ],
                 loading: false,
                 error: null,

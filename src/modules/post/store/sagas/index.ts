@@ -2,14 +2,18 @@ import { call, put, takeEvery } from 'redux-saga/effects';
 import {ApiResponse} from '@/core/api';
 import {POST_LIST_REQUEST} from "@/modules/post/store/constants";
 import {getPostListService} from "@/modules/post/services";
-import {getPostListFailure, getPostListSuccess} from "@/modules/post/store/actions";
+import {getPostListFailure, getPostListRequest, getPostListSuccess} from "@/modules/post/store/actions";
 import {TGetPostListResponse} from "@/modules/post/types";
+import {getPaginationFromHeaders} from "@/helpers/headers";
 
-function* getPostListSaga() {
+function* getPostListSaga(action: ReturnType<typeof getPostListRequest>) {
     try {
-        const response: ApiResponse<TGetPostListResponse> = yield call(getPostListService);
+        const apiResponse: ApiResponse<TGetPostListResponse> = yield call(getPostListService, action.payload.page);
+        const {data, response} = apiResponse;
 
-        yield put(getPostListSuccess(response.data));
+        const pagination = getPaginationFromHeaders(response.headers);
+
+        yield put(getPostListSuccess(data, pagination));
     } catch (error) {
         // @ts-ignore
         yield put(getPostListFailure(error.message));

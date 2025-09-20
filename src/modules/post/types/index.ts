@@ -16,3 +16,10 @@ export interface IPost {
     "updatedAt": string,
     "createdAt": string
 }
+
+export interface IPagination {
+    current: number;
+    pageCount: number;
+    pageSize: number;
+    total: number;
+}
