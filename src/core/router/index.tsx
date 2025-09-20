@@ -13,8 +13,6 @@ export const AppRouter: FC = () => {
             <BrowserRouter>
                 <ConnectedRouter history={history}>
                     <Switch>
-                        <Route path="/" component={AuthScreen} />
-
                         <Route
                             path="/posts"
                             render={() => (
@@ -23,6 +21,8 @@ export const AppRouter: FC = () => {
                                 </PrivateRoute>
                             )}
                         />
+
+                        <Route exact path="/" component={AuthScreen} />
                     </Switch>
                 </ConnectedRouter>
             </BrowserRouter>
