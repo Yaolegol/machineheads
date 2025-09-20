@@ -8,10 +8,15 @@ interface IProps {
 }
 
 export const PrivateRoute: FC<IProps> = ({ children }) => {
-    const isAuth = useSelector((state: RootState) => state.auth.isLoggedIn);
+    const isAuthInit = useSelector((state: RootState) => state.auth.isAuthInit);
+    const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
     const location = useLocation();
 
-    if (!isAuth) {
+    if(!isAuthInit) {
+        return null;
+    }
+
+    if (!isLoggedIn) {
         return <Redirect to="/" from={location.pathname} />;
     }
 

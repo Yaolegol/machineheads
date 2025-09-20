@@ -12,10 +12,6 @@ export interface ApiResponse<T> {
     response: Response;
 }
 
-export interface IRefreshTokenProps {
-    refresh_token: string;
-}
-
 class ApiClient {
     private request = async <T>(endpoint: string, options: TOptions): Promise<ApiResponse<T>> => {
         const url = `${API_BASE_URL}${endpoint}`;

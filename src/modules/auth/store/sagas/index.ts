@@ -1,5 +1,5 @@
 import { call, put, takeEvery } from 'redux-saga/effects';
-import {apiClient, ApiResponse} from '@/core/api';
+import {ApiResponse} from '@/core/api';
 import {
     INIT_AUTH,
     LOGIN_REQUEST,
@@ -9,7 +9,7 @@ import {
     loginFailure, loginSuccess, refreshTokenSuccess, refreshTokenFailure,
     initAuthSuccess, initAuthFailure
 } from '@/modules/auth/store/actions';
-import {setCookie, removeCookie, getCookie} from '@/helpers/cookie';
+import {getCookie} from '@/helpers/cookie';
 import { push } from 'connected-react-router';
 import {LoginRequestAction} from "@/modules/auth/store/types";
 import {ITokenResponse} from "@/modules/auth/types";
@@ -68,7 +68,7 @@ function* loginSaga(action: LoginRequestAction) {
 
 function* refreshTokenSaga() {
     try {
-        const token = getCookie('refreshToken');
+        const token = getCookie(REFRESH_TOKEN_COOKIE_NAME);
 
         if(!token) {
             yield put(refreshTokenFailure());
