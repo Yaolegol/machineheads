@@ -20,8 +20,8 @@ import {ACCESS_TOKEN_COOKIE_NAME, REFRESH_TOKEN_COOKIE_NAME} from "@/modules/aut
 export function* initAuthSaga() {
     const accessToken = getCookie(ACCESS_TOKEN_COOKIE_NAME);
 
-    if (!accessToken) {
-        yield put(initAuthSuccess(false));
+    if (accessToken) {
+        yield put(initAuthSuccess(true));
 
         return;
     }
