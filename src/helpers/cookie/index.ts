@@ -19,8 +19,8 @@ export function getCookie(name: string): string | null {
 }
 
 
-export const setCookie = (name: string, value: string, maxAge: number): void => {
-    document.cookie = `${name}=${value}; path=/; max-age=${maxAge}`;
+export const setSecureCookie = (name: string, value: string, maxAge: number): void => {
+    document.cookie = `${name}=${value}; path=/; max-age=${maxAge}; secure; httponly`;
 };
 
 export const removeCookie = (name: string): void => {
