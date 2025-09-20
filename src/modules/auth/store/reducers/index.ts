@@ -5,17 +5,19 @@ import {
     LOGOUT,
     REFRESH_TOKEN_REQUEST,
     REFRESH_TOKEN_SUCCESS,
-    REFRESH_TOKEN_FAILURE,
+    REFRESH_TOKEN_FAILURE, INIT_AUTH, INIT_AUTH_SUCCESS, INIT_AUTH_FAILURE,
 } from '@/modules/auth/store/constants';
 import {AuthActionTypes} from "@/modules/auth/store/types";
 
 export interface AuthState {
+    isAuthInit: boolean;
     isLoggedIn: boolean;
     loading: boolean;
     error: string | null;
 }
 
 const initialState: AuthState = {
+    isAuthInit: false,
     isLoggedIn: false,
     loading: false,
     error: null,
@@ -23,6 +25,27 @@ const initialState: AuthState = {
 
 export const authReducer = (state = initialState, action: AuthActionTypes): AuthState => {
     switch (action.type) {
+        case INIT_AUTH:
+            return {
+                ...state,
+                loading: true,
+                error: null,
+            };
+        case INIT_AUTH_SUCCESS:
+            return {
+                ...state,
+                isLoggedIn: action.payload,
+                loading: false,
+                isAuthInit: true,
+                error: null,
+            };
+        case INIT_AUTH_FAILURE:
+            return {
+                ...state,
+                loading: false,
+                isAuthInit: true,
+                error: action.payload,
+            };
         case LOGIN_REQUEST:
             return {
                 ...state,

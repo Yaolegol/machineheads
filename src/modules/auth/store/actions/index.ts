@@ -1,4 +1,27 @@
-import {REFRESH_TOKEN_REQUEST, REFRESH_TOKEN_SUCCESS, REFRESH_TOKEN_FAILURE, LOGIN_REQUEST, LOGIN_FAILURE, LOGIN_SUCCESS, LOGOUT} from '@/modules/auth/store/constants'
+import {
+    REFRESH_TOKEN_REQUEST,
+    REFRESH_TOKEN_SUCCESS,
+    REFRESH_TOKEN_FAILURE,
+    LOGIN_REQUEST,
+    LOGIN_FAILURE,
+    LOGIN_SUCCESS,
+    LOGOUT,
+    INIT_AUTH, INIT_AUTH_SUCCESS, INIT_AUTH_FAILURE
+} from '@/modules/auth/store/constants'
+
+export const initAuth = () => ({
+    type: INIT_AUTH,
+});
+
+export const initAuthSuccess = (isAuth: boolean) => ({
+    type: INIT_AUTH_SUCCESS,
+    payload: isAuth,
+});
+
+export const initAuthFailure = (error: string) => ({
+    type: INIT_AUTH_FAILURE,
+    payload: error,
+});
 
 export const loginRequest = (email: string, password: string) => ({
     type: LOGIN_REQUEST,

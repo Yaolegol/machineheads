@@ -1,6 +1,6 @@
 export interface ITokenResponse {
-    accessToken: string;
+    access_token: string;
     access_expired_at: number;
-    refreshToken: string;
+    refresh_token: string;
     refresh_expired_at: number;
 }

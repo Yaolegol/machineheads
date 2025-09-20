@@ -1,3 +1,5 @@
+import {ITokenResponse} from "@/modules/auth/types";
+
 export function getCookie(name: string): string | null {
     const cookieStr = document.cookie;
 

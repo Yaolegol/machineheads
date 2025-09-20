@@ -1,10 +1,25 @@
 import {
+    INIT_AUTH, INIT_AUTH_FAILURE, INIT_AUTH_SUCCESS,
     LOGIN_FAILURE,
     LOGIN_REQUEST,
     LOGIN_SUCCESS,
     LOGOUT, REFRESH_TOKEN_FAILURE,
     REFRESH_TOKEN_REQUEST, REFRESH_TOKEN_SUCCESS
 } from "@/modules/auth/store/constants";
+
+export interface InitAuthAction {
+    type: typeof INIT_AUTH,
+}
+
+export interface InitAuthSuccessAction {
+    type: typeof INIT_AUTH_SUCCESS,
+    payload: boolean,
+}
+
+export interface InitAuthFailureAction {
+    type: typeof INIT_AUTH_FAILURE,
+    payload: string,
+}
 
 export interface LoginRequestAction {
     type: typeof LOGIN_REQUEST;
@@ -37,6 +52,9 @@ export interface RefreshTokenFailureAction {
 }
 
 export type AuthActionTypes =
+    | InitAuthAction
+    | InitAuthSuccessAction
+    | InitAuthFailureAction
     | LoginRequestAction
     | LoginSuccessAction
     | LoginFailureAction

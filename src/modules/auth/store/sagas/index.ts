@@ -1,27 +1,66 @@
 import { call, put, takeEvery } from 'redux-saga/effects';
 import {apiClient, ApiResponse} from '@/core/api';
 import {
+    INIT_AUTH,
     LOGIN_REQUEST,
     REFRESH_TOKEN_REQUEST,
 } from '@/modules/auth/store/constants';
-import {loginFailure, loginSuccess, refreshTokenSuccess, refreshTokenFailure, refreshTokenRequest, loginRequest, logout} from '@/modules/auth/store/actions';
+import {
+    loginFailure, loginSuccess, refreshTokenSuccess, refreshTokenFailure,
+    initAuthSuccess, initAuthFailure
+} from '@/modules/auth/store/actions';
 import {setCookie, removeCookie, getCookie} from '@/helpers/cookie';
 import { push } from 'connected-react-router';
 import {LoginRequestAction} from "@/modules/auth/store/types";
 import {ITokenResponse} from "@/modules/auth/types";
-import {loginService} from "@/modules/auth/services";
+import {loginService, refreshTokenService} from "@/modules/auth/services";
+import {clearAuthCookie, updateAuthCookie} from "@/modules/auth/helpers";
+import {ACCESS_TOKEN_COOKIE_NAME, REFRESH_TOKEN_COOKIE_NAME} from "@/modules/auth/constants";
+
+export function* initAuthSaga() {
+    const accessToken = getCookie(ACCESS_TOKEN_COOKIE_NAME);
+
+    if (!accessToken) {
+        yield put(initAuthSuccess(false));
+
+        return;
+    }
+
+    const refreshToken = getCookie(REFRESH_TOKEN_COOKIE_NAME);
+
+    if (refreshToken) {
+        try {
+            const response: ITokenResponse | null = yield call(refreshTokenService, refreshToken);
+
+            if(response) {
+                updateAuthCookie(response);
+
+                yield put(initAuthSuccess(true));
+            }
+        } catch (error) {
+            clearAuthCookie();
+
+            // @ts-ignore
+            yield put(initAuthFailure(error.message));
+        }
+    }
+}
 
 function* loginSaga(action: LoginRequestAction) {
     try {
         const response: ApiResponse<ITokenResponse> = yield call(loginService, action.payload);
-        const { accessToken, access_expired_at, refreshToken, refresh_expired_at } = response.data;
 
-        setCookie('accessToken', accessToken, access_expired_at);
-        setCookie('refreshToken', refreshToken, refresh_expired_at);
+        const {data} = response;
 
-        yield put(loginSuccess());
-        yield put(push('/posts'));
+        if(data) {
+            updateAuthCookie(data);
+
+            yield put(loginSuccess());
+            yield put(push('/posts'));
+        }
     } catch (error) {
+        clearAuthCookie();
+
         // @ts-ignore
         yield put(loginFailure(error.message));
     }
@@ -30,24 +69,33 @@ function* loginSaga(action: LoginRequestAction) {
 function* refreshTokenSaga() {
     try {
         const token = getCookie('refreshToken');
-        const response: ApiResponse<ITokenResponse> = yield call(apiClient.post, '/auth/token-refresh', { refreshToken: token });
-        const { accessToken, access_expired_at, refreshToken, refresh_expired_at } = response.data;
 
-        setCookie('accessToken', accessToken, access_expired_at);
-        setCookie('refreshToken', refreshToken, refresh_expired_at);
+        if(!token) {
+            yield put(refreshTokenFailure());
 
-        yield put(refreshTokenSuccess());
+            yield put(push('/'));
+
+            return;
+        }
+
+        const response: ITokenResponse | null = yield call(refreshTokenService, token);
+
+        if(response) {
+            updateAuthCookie(response);
+
+            yield put(refreshTokenSuccess());
+        }
     } catch (error) {
-        yield put(refreshTokenFailure());
+        clearAuthCookie();
 
-        removeCookie('accessToken');
-        removeCookie('refreshToken');
+        yield put(refreshTokenFailure());
 
         yield put(push('/'));
     }
 }
 
 export function* authSaga() {
+    yield takeEvery(INIT_AUTH, initAuthSaga);
     yield takeEvery(LOGIN_REQUEST, loginSaga);
     yield takeEvery(REFRESH_TOKEN_REQUEST, refreshTokenSaga);
 }

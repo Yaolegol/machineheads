@@ -1,3 +1,6 @@
+export const INIT_AUTH = 'INIT_AUTH';
+export const INIT_AUTH_SUCCESS = 'INIT_AUTH_SUCCESS';
+export const INIT_AUTH_FAILURE = 'INIT_AUTH_FAILURE';
 export const LOGIN_REQUEST = 'LOGIN_REQUEST';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const LOGIN_FAILURE = 'LOGIN_FAILURE';

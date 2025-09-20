@@ -1,4 +1,7 @@
-import { getCookie, setCookie } from '@/helpers/cookie';
+import { getCookie } from '@/helpers/cookie';
+import {ITokenResponse} from "@/modules/auth/types";
+import {updateAuthCookie} from "@/modules/auth/helpers";
+import {ACCESS_TOKEN_COOKIE_NAME, REFRESH_TOKEN_API_NAME, REFRESH_TOKEN_COOKIE_NAME} from "@/modules/auth/constants";
 
 const API_BASE_URL = 'https://rest-test.machineheads.ru';
 
@@ -9,11 +12,15 @@ export interface ApiResponse<T> {
     response: Response;
 }
 
+export interface IRefreshTokenProps {
+    refresh_token: string;
+}
+
 class ApiClient {
     private request = async <T>(endpoint: string, options: TOptions): Promise<ApiResponse<T>> => {
         const url = `${API_BASE_URL}${endpoint}`;
-        const token = getCookie('accessToken');
-        const refreshToken = getCookie('refreshToken');
+        const token = getCookie(ACCESS_TOKEN_COOKIE_NAME);
+        const refreshToken = getCookie(REFRESH_TOKEN_COOKIE_NAME);
 
         const headers: HeadersInit = {
             ...options.headers,
@@ -29,12 +36,15 @@ class ApiClient {
         });
 
         if (response.status === 401 && refreshToken) {
-            const newToken = await this.refreshToken(refreshToken);
+            const formData = new FormData();
+            formData.append(REFRESH_TOKEN_API_NAME, refreshToken);
 
-            if (newToken) {
-                setCookie('accessToken', newToken, 3600);
+            const refreshTokenData = await this.refreshToken(formData);
 
-                this.setHeaderToken(headers, newToken);
+            if (refreshTokenData) {
+                updateAuthCookie(refreshTokenData);
+
+                this.setHeaderToken(headers, refreshTokenData.access_token);
 
                 const retryResponse = await fetch(url, {
                     ...options,
@@ -62,20 +72,15 @@ class ApiClient {
         }
     }
 
-    private refreshToken = async (refreshToken: string): Promise<string | null> => {
+    public refreshToken = async (data: FormData): Promise<ITokenResponse | null> => {
         try {
-            const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
+            const response = await fetch(`${API_BASE_URL}/auth/token-refresh`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ refreshToken }),
+                body: data,
             });
 
             if (response.ok) {
-                const { accessToken } = await response.json();
-
-                return accessToken;
+                return response.json();
             }
         } catch (error) {
             console.error('Refresh token failed:', error);
